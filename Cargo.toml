@@ -3,5 +3,22 @@ name = "mix-distribution"
 version = "0.1.0"
 authors = ["Hidehito Yabuuchi <hdht.ybuc@gmail.com>"]
 
+description = "Mixture distribution"
+
+documentation = "https://docs.rs/mix-distribution"
+homepage = "https://crates.io/crates/mix-distribution"
+repository = "https://github.com/ordovicia/mix-distribution"
+readme = "README.md"
+
+keywords = ["random"]
+# categories = []
+
+license = "MIT"
+license-file = "LICENSE"
+
+[badges]
+travis-ci = { repository = "ordovicia/mix-distribution" }
+
 [dependencies]
+# TODO: Use published version of rand with `rand::distributions::WeightedIndex`
 rand = { git = "https://github.com/rust-random/rand", rev = "22d6607" }
