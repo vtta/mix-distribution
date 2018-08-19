@@ -1,0 +1,7 @@
+[package]
+name = "mix-distribution"
+version = "0.1.0"
+authors = ["Hidehito Yabuuchi <hdht.ybuc@gmail.com>"]
+
+[dependencies]
+rand = { git = "https://github.com/rust-random/rand", rev = "22d6607" }
