@@ -92,9 +92,28 @@ mod tests {
             Mix::new(dists, weights)
         };
 
-        for _ in 0..1_000_000 {
-            println!("{}", mix.sample(&mut rng));
+        for _ in 0..30000 {
+            println!("{} # mix", mix.sample(&mut rng));
         }
+
+        // from sys import stdin
+        //
+        // import numpy as np
+        // from numpy.random import normal
+        // import matplotlib.pyplot as plt
+        //
+        // BINS = 128
+        // ALPHA = 0.5
+        //
+        // actually = np.array([float(l.split()[0])
+        //                      for l in stdin.readlines() if "# mix" in l])
+        // plt.hist(actually, bins=BINS, alpha=ALPHA)
+        //
+        // expected = np.concatenate(
+        //     (normal(0.0, 1.0, 20000), normal(5.0, 2.0, 10000)), axis=0)
+        // plt.hist(expected, bins=BINS, alpha=ALPHA)
+        //
+        // plt.show()
     }
 
     #[test]
