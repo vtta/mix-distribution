@@ -26,9 +26,19 @@ use rand::{
 ///
 /// let mut rng = rand::thread_rng();
 ///
+/// // Mixture of two distributions
 /// let mix = {
 ///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0)];
 ///     let weights = &[2, 1];
+///     Mix::new(dists, weights)
+/// };
+///
+/// mix.sample(&mut rng);
+///
+/// // Mixture of three distributions
+/// let mix = {
+///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0), Normal::new(-1.0, 1.0)];
+///     let weights = &[2, 1, 3];
 ///     Mix::new(dists, weights)
 /// };
 ///
