@@ -13,7 +13,6 @@ readme = "README.md"
 keywords = ["random"]
 # categories = []
 
-license = "MIT"
 license-file = "LICENSE"
 
 [badges]
