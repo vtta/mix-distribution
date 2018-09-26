@@ -106,6 +106,8 @@ mod tests {
             println!("{} # mix", mix.sample(&mut rng));
         }
 
+        // # cargo test -- --ignored --nocapture | python plot.py
+        //
         // from sys import stdin
         //
         // import numpy as np
@@ -117,11 +119,14 @@ mod tests {
         //
         // actually = np.array([float(l.split()[0])
         //                      for l in stdin.readlines() if "# mix" in l])
-        // plt.hist(actually, bins=BINS, alpha=ALPHA)
+        // plt.hist(actually, bins=BINS, alpha=ALPHA, label="Actual")
         //
         // expected = np.concatenate(
         //     (normal(0.0, 1.0, 20000), normal(5.0, 2.0, 10000)), axis=0)
-        // plt.hist(expected, bins=BINS, alpha=ALPHA)
+        // plt.hist(expected, bins=BINS, alpha=ALPHA, label="Expected")
+        //
+        // plt.legend()
+        // plt.grid()
         //
         // plt.show()
     }
