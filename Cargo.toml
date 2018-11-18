@@ -1,19 +1,19 @@
 [package]
 name = "mix-distribution"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Hidehito Yabuuchi <hdht.ybuc@gmail.com>"]
+license = "MIT"
 
 description = "Mixture distribution"
-
-documentation = "https://docs.rs/mix-distribution"
 homepage = "https://crates.io/crates/mix-distribution"
+documentation = "https://docs.rs/mix-distribution"
 repository = "https://github.com/ordovicia/mix-distribution"
 readme = "README.md"
 
 keywords = ["random"]
 # categories = []
 
-license-file = "LICENSE"
+exclude = [".gitignore"]
 
 [badges]
 travis-ci = { repository = "ordovicia/mix-distribution" }

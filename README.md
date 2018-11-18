@@ -1,5 +1,8 @@
 # Mixture Distribution [![Build Status](https://travis-ci.com/ordovicia/mix-distribution.svg?branch=master)](https://travis-ci.com/ordovicia/mix-distribution)
 
+[![mix-distribution](https://img.shields.io/crates/v/mix-distribution.svg)](https://crates.io/crates/mix-distribution)
+[![mix-distribution](https://docs.rs/mix-distribution/badge.svg)](https://docs.rs/mix-distribution)
+
 ## Example
 
 ```rust
