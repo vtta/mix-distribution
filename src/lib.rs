@@ -182,4 +182,27 @@ mod tests {
         assert_eq!((ones as f64 / 1000.0).round() as i32, 2);
         assert_eq!((twos as f64 / 1000.0).round() as i32, 1);
     }
+
+    #[test]
+    fn test_weight_f64() {
+        let mut rng = rand::thread_rng();
+
+        let mix = {
+            use rand::distributions::Uniform;
+
+            let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
+            let weights = &[0.5, 1.5];
+            Mix::new(dists, weights)
+        };
+
+        let x = mix.sample_iter(&mut rng).take(2000).collect::<Vec<_>>();
+
+        let zeros = x.iter().filter(|&&x| x == 0).count();
+        let ones = x.iter().filter(|&&x| x == 1).count();
+
+        assert_eq!(zeros + ones, 2000);
+
+        assert_eq!((zeros as f64 / 100.0).round() as i32, 5);
+        assert_eq!((ones as f64 / 100.0).round() as i32, 15);
+    }
 }
