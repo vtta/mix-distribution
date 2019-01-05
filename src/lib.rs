@@ -1,10 +1,6 @@
 //! Mixuture distributions.
 
-extern crate rand;
-
-use std::fmt;
-use std::marker::PhantomData;
-use std::ops::AddAssign;
+use std::{fmt, marker::PhantomData, ops::AddAssign};
 
 use rand::{
     distributions::{
@@ -111,7 +107,7 @@ where
     X: SampleUniform + PartialOrd + fmt::Debug,
     X::Sampler: fmt::Debug,
 {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
             "Mix {{ distributions: {:?}, weights: {:?} }}",
