@@ -3,7 +3,7 @@
 [![mix-distribution](https://img.shields.io/crates/v/mix-distribution.svg)](https://crates.io/crates/mix-distribution)
 [![mix-distribution](https://docs.rs/mix-distribution/badge.svg)](https://docs.rs/mix-distribution)
 
-## Example
+## Examples
 
 ```rust
 extern crate rand;
@@ -18,7 +18,7 @@ let mut rng = rand::thread_rng();
 let mix = {
     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0)];
     let weights = &[2, 1];
-    Mix::new(dists, weights)
+    Mix::new(dists, weights).unwrap()
 };
 
 mix.sample(&mut rng);
@@ -27,7 +27,7 @@ mix.sample(&mut rng);
 let mix = {
     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0), Normal::new(-1.0, 1.0)];
     let weights = &[2, 1, 3];
-    Mix::new(dists, weights)
+    Mix::new(dists, weights).unwrap()
 };
 
 mix.sample(&mut rng);

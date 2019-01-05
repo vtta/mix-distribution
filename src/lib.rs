@@ -1,4 +1,4 @@
-//! Mixuture distribution.
+//! Mixuture distributions.
 
 extern crate rand;
 
@@ -9,14 +9,14 @@ use std::ops::AddAssign;
 use rand::{
     distributions::{
         uniform::{SampleBorrow, SampleUniform},
-        Distribution, WeightedIndex,
+        Distribution, WeightedError, WeightedIndex,
     },
     Rng,
 };
 
-/// Mixture distribution.
+/// Mixture distributions.
 ///
-/// # Example
+/// # Examples
 ///
 /// ```rust
 /// extern crate rand;
@@ -31,7 +31,7 @@ use rand::{
 /// let mix = {
 ///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0)];
 ///     let weights = &[2, 1];
-///     Mix::new(dists, weights)
+///     Mix::new(dists, weights).unwrap()
 /// };
 ///
 /// mix.sample(&mut rng);
@@ -40,7 +40,7 @@ use rand::{
 /// let mix = {
 ///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0), Normal::new(-1.0, 1.0)];
 ///     let weights = &[2, 1, 3];
-///     Mix::new(dists, weights)
+///     Mix::new(dists, weights).unwrap()
 /// };
 ///
 /// mix.sample(&mut rng);
@@ -60,18 +60,22 @@ where
     T: Distribution<U>,
     X: SampleUniform + PartialOrd,
 {
-    pub fn new<I, J>(dists: I, weights: J) -> Self
+    /// Creates a new `Mix`.
+    /// `dists` and `weights` must have the same length.
+    ///
+    /// Propagates errors from `WeightedIndex::new()`.
+    pub fn new<I, J>(dists: I, weights: J) -> Result<Self, WeightedError>
     where
         I: IntoIterator<Item = T>,
         J: IntoIterator,
         J::Item: SampleBorrow<X>,
         X: for<'a> AddAssign<&'a X> + Clone + Default,
     {
-        Self {
+        Ok(Self {
             distributions: dists.into_iter().collect(),
-            weights: WeightedIndex::new(weights).unwrap(),
+            weights: WeightedIndex::new(weights)?,
             _marker: PhantomData,
-        }
+        })
     }
 }
 
@@ -130,7 +134,7 @@ mod tests {
 
             let dists = vec![Normal::new(0.0, 1.0), Normal::new(5.0, 2.0)];
             let weights = &[2, 1];
-            Mix::new(dists, weights)
+            Mix::new(dists, weights).unwrap()
         };
 
         for _ in 0..30000 {
@@ -171,7 +175,7 @@ mod tests {
 
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
             let weights = &[2, 1];
-            Mix::new(dists, weights)
+            Mix::new(dists, weights).unwrap()
         };
 
         let x = mix.sample_iter(&mut rng).take(3000).collect::<Vec<_>>();
@@ -198,7 +202,7 @@ mod tests {
                 Uniform::new_inclusive(2, 2),
             ];
             let weights = &[3, 2, 1];
-            Mix::new(dists, weights)
+            Mix::new(dists, weights).unwrap()
         };
 
         let x = mix.sample_iter(&mut rng).take(6000).collect::<Vec<_>>();
@@ -223,7 +227,7 @@ mod tests {
 
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
             let weights = &[0.5, 1.5];
-            Mix::new(dists, weights)
+            Mix::new(dists, weights).unwrap()
         };
 
         let x = mix.sample_iter(&mut rng).take(2000).collect::<Vec<_>>();
@@ -235,5 +239,30 @@ mod tests {
 
         assert_eq!((zeros as f64 / 100.0).round() as i32, 5);
         assert_eq!((ones as f64 / 100.0).round() as i32, 15);
+    }
+
+    #[test]
+    fn error_invalid_weights() {
+        use rand::distributions::Uniform;
+
+        let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
+
+        let weights = &[2, 1][0..0];
+        assert_eq!(
+            Mix::new(dists.clone(), weights).unwrap_err(),
+            WeightedError::NoItem,
+        );
+
+        let weights = &[2, -1];
+        assert_eq!(
+            Mix::new(dists.clone(), weights).unwrap_err(),
+            WeightedError::NegativeWeight
+        );
+
+        let weights = &[0, 0];
+        assert_eq!(
+            Mix::new(dists, weights).unwrap_err(),
+            WeightedError::AllWeightsZero
+        );
     }
 }
