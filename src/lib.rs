@@ -2,6 +2,7 @@
 
 extern crate rand;
 
+use std::fmt;
 use std::marker::PhantomData;
 use std::ops::AddAssign;
 
@@ -82,6 +83,36 @@ where
     fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> U {
         let idx = self.weights.sample(rng);
         self.distributions[idx].sample(rng)
+    }
+}
+
+impl<T, U, X> Clone for Mix<T, U, X>
+where
+    T: Distribution<U> + Clone,
+    X: SampleUniform + PartialOrd + Clone,
+    X::Sampler: Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            distributions: self.distributions.clone(),
+            weights: self.weights.clone(),
+            _marker: PhantomData,
+        }
+    }
+}
+
+impl<T, U, X> fmt::Debug for Mix<T, U, X>
+where
+    T: Distribution<U> + fmt::Debug,
+    X: SampleUniform + PartialOrd + fmt::Debug,
+    X::Sampler: fmt::Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(
+            f,
+            "Mix {{ distributions: {:?}, weights: {:?} }}",
+            self.distributions, self.weights
+        )
     }
 }
 
