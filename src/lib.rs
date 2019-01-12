@@ -15,9 +15,6 @@ use rand::{
 /// # Examples
 ///
 /// ```rust
-/// extern crate rand;
-/// extern crate mix_distribution;
-///
 /// use rand::distributions::{Distribution, Normal};
 /// use mix_distribution::Mix;
 ///
