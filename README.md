@@ -1,7 +1,17 @@
-# Mixture Distribution [![Build Status](https://travis-ci.com/ordovicia/mix-distribution.svg?branch=master)](https://travis-ci.com/ordovicia/mix-distribution)
+# Mixture Distribution
 
-[![mix-distribution](https://img.shields.io/crates/v/mix-distribution.svg)](https://crates.io/crates/mix-distribution)
-[![mix-distribution](https://docs.rs/mix-distribution/badge.svg)](https://docs.rs/mix-distribution)
+[![Build Status][build-img]][build-link]
+[![mix-distribution][cratesio-img]][cratesio-link]
+[![mix-distribution][docsrs-img]][docsrs-link]
+
+[build-img]: https://travis-ci.com/ordovicia/mix-distribution.svg?branch=master
+[build-link]: https://travis-ci.com/ordovicia/mix-distribution
+
+[cratesio-img]: https://img.shields.io/crates/v/mix-distribution.svg
+[cratesio-link]: https://crates.io/crates/mix-distribution
+
+[docsrs-img]: https://docs.rs/mix-distribution/badge.svg
+[docsrs-link]: https://docs.rs/mix-distribution
 
 ## Examples
 
