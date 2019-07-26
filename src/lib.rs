@@ -122,6 +122,7 @@ where
 #[cfg(test)]
 mod tests {
     use super::*;
+    use rand_distr::{Normal, Uniform};
 
     #[test]
     #[ignore]
@@ -129,8 +130,6 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand_distr::Normal;
-
             let dists = vec![
                 Normal::new(0.0, 1.0).unwrap(),
                 Normal::new(5.0, 2.0).unwrap(),
@@ -143,7 +142,7 @@ mod tests {
             println!("{} # mix", mix.sample(&mut rng));
         }
 
-        // # cargo test -- --ignored --nocapture | python plot.py
+        // # cargo test test_mix_plot -- --ignored --nocapture | python3 plot.py
         //
         // from sys import stdin
         //
@@ -154,9 +153,9 @@ mod tests {
         // BINS = 128
         // ALPHA = 0.5
         //
-        // actually = np.array([float(l.split()[0])
+        // actual = np.array([float(l.split()[0])
         //                      for l in stdin.readlines() if "# mix" in l])
-        // plt.hist(actually, bins=BINS, alpha=ALPHA, label="Actual")
+        // plt.hist(actual, bins=BINS, alpha=ALPHA, label="Actual")
         //
         // expected = np.concatenate(
         //     (normal(0.0, 1.0, 20000), normal(5.0, 2.0, 10000)), axis=0)
@@ -173,22 +172,20 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand_distr::Uniform;
-
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
             let weights = &[2, 1];
             Mix::new(dists, weights).unwrap()
         };
 
-        let x = mix.sample_iter(&mut rng).take(3000).collect::<Vec<_>>();
+        let data = mix.sample_iter(&mut rng).take(300).collect::<Vec<_>>();
 
-        let zeros = x.iter().filter(|&&x| x == 0).count();
-        let ones = x.iter().filter(|&&x| x == 1).count();
+        let zeros = data.iter().filter(|&&x| x == 0).count();
+        let ones = data.iter().filter(|&&x| x == 1).count();
 
-        assert_eq!(zeros + ones, 3000);
+        assert_eq!(zeros + ones, 300);
 
-        assert_eq!((zeros as f64 / 1000.0).round() as i32, 2);
-        assert_eq!((ones as f64 / 1000.0).round() as i32, 1);
+        assert_eq!((zeros as f64 / 100.0).round() as i32, 2);
+        assert_eq!((ones as f64 / 100.0).round() as i32, 1);
     }
 
     #[test]
@@ -196,8 +193,6 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand_distr::Uniform;
-
             let dists = vec![
                 Uniform::new_inclusive(0, 0),
                 Uniform::new_inclusive(1, 1),
@@ -207,17 +202,17 @@ mod tests {
             Mix::new(dists, weights).unwrap()
         };
 
-        let x = mix.sample_iter(&mut rng).take(6000).collect::<Vec<_>>();
+        let data = mix.sample_iter(&mut rng).take(600).collect::<Vec<_>>();
 
-        let zeros = x.iter().filter(|&&x| x == 0).count();
-        let ones = x.iter().filter(|&&x| x == 1).count();
-        let twos = x.iter().filter(|&&x| x == 2).count();
+        let zeros = data.iter().filter(|&&x| x == 0).count();
+        let ones = data.iter().filter(|&&x| x == 1).count();
+        let twos = data.iter().filter(|&&x| x == 2).count();
 
-        assert_eq!(zeros + ones + twos, 6000);
+        assert_eq!(zeros + ones + twos, 600);
 
-        assert_eq!((zeros as f64 / 1000.0).round() as i32, 3);
-        assert_eq!((ones as f64 / 1000.0).round() as i32, 2);
-        assert_eq!((twos as f64 / 1000.0).round() as i32, 1);
+        assert_eq!((zeros as f64 / 100.0).round() as i32, 3);
+        assert_eq!((ones as f64 / 100.0).round() as i32, 2);
+        assert_eq!((twos as f64 / 100.0).round() as i32, 1);
     }
 
     #[test]
@@ -225,28 +220,24 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand_distr::Uniform;
-
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
-            let weights = &[0.5, 1.5];
+            let weights = &[0.4, 0.6];
             Mix::new(dists, weights).unwrap()
         };
 
-        let x = mix.sample_iter(&mut rng).take(2000).collect::<Vec<_>>();
+        let data = mix.sample_iter(&mut rng).take(1000).collect::<Vec<_>>();
 
-        let zeros = x.iter().filter(|&&x| x == 0).count();
-        let ones = x.iter().filter(|&&x| x == 1).count();
+        let zeros = data.iter().filter(|&&x| x == 0).count();
+        let ones = data.iter().filter(|&&x| x == 1).count();
 
-        assert_eq!(zeros + ones, 2000);
+        assert_eq!(zeros + ones, 1000);
 
-        assert_eq!((zeros as f64 / 100.0).round() as i32, 5);
-        assert_eq!((ones as f64 / 100.0).round() as i32, 15);
+        assert_eq!((zeros as f64 / 100.0).round() as i32, 4);
+        assert_eq!((ones as f64 / 100.0).round() as i32, 6);
     }
 
     #[test]
     fn error_invalid_weights() {
-        use rand_distr::Uniform;
-
         let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
 
         let weights = &[2, 1][0..0];
