@@ -2,12 +2,11 @@
 
 use std::{fmt, marker::PhantomData, ops::AddAssign};
 
-use rand::{
-    distributions::{
-        uniform::{SampleBorrow, SampleUniform},
-        Distribution, WeightedError, WeightedIndex,
-    },
-    Rng,
+use rand::Rng;
+use rand_distr::{
+    uniform::{SampleBorrow, SampleUniform},
+    weighted::{WeightedError, WeightedIndex},
+    Distribution,
 };
 
 /// Mixture distributions.
@@ -15,14 +14,17 @@ use rand::{
 /// # Examples
 ///
 /// ```rust
-/// use rand::distributions::{Distribution, Normal};
+/// use rand_distr::{Distribution, Normal};
 /// use mix_distribution::Mix;
 ///
 /// let mut rng = rand::thread_rng();
 ///
 /// // Mixture of two distributions
 /// let mix = {
-///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0)];
+///     let dists = vec![
+///         Normal::new(0.0, 1.0).unwrap(),
+///         Normal::new(1.0, 2.0).unwrap(),
+///     ];
 ///     let weights = &[2, 1];
 ///     Mix::new(dists, weights).unwrap()
 /// };
@@ -31,7 +33,11 @@ use rand::{
 ///
 /// // Mixture of three distributions
 /// let mix = {
-///     let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0), Normal::new(-1.0, 1.0)];
+///     let dists = vec![
+///         Normal::new(0.0, 1.0).unwrap(),
+///         Normal::new(1.0, 2.0).unwrap(),
+///         Normal::new(-1.0, 1.0).unwrap(),
+///     ];
 ///     let weights = &[2, 1, 3];
 ///     Mix::new(dists, weights).unwrap()
 /// };
@@ -56,7 +62,7 @@ where
     /// Creates a new `Mix`.
     /// `dists` and `weights` must have the same length.
     ///
-    /// Propagates errors from `WeightedIndex::new()`.
+    /// Propagates errors from `rand_dist::weighted::WeightedIndex::new()`.
     pub fn new<I, J>(dists: I, weights: J) -> Result<Self, WeightedError>
     where
         I: IntoIterator<Item = T>,
@@ -123,9 +129,12 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand::distributions::Normal;
+            use rand_distr::Normal;
 
-            let dists = vec![Normal::new(0.0, 1.0), Normal::new(5.0, 2.0)];
+            let dists = vec![
+                Normal::new(0.0, 1.0).unwrap(),
+                Normal::new(5.0, 2.0).unwrap(),
+            ];
             let weights = &[2, 1];
             Mix::new(dists, weights).unwrap()
         };
@@ -164,7 +173,7 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand::distributions::Uniform;
+            use rand_distr::Uniform;
 
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
             let weights = &[2, 1];
@@ -187,7 +196,7 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand::distributions::Uniform;
+            use rand_distr::Uniform;
 
             let dists = vec![
                 Uniform::new_inclusive(0, 0),
@@ -216,7 +225,7 @@ mod tests {
         let mut rng = rand::thread_rng();
 
         let mix = {
-            use rand::distributions::Uniform;
+            use rand_distr::Uniform;
 
             let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
             let weights = &[0.5, 1.5];
@@ -236,7 +245,7 @@ mod tests {
 
     #[test]
     fn error_invalid_weights() {
-        use rand::distributions::Uniform;
+        use rand_distr::Uniform;
 
         let dists = vec![Uniform::new_inclusive(0, 0), Uniform::new_inclusive(1, 1)];
 
@@ -249,13 +258,13 @@ mod tests {
         let weights = &[2, -1];
         assert_eq!(
             Mix::new(dists.clone(), weights).unwrap_err(),
-            WeightedError::NegativeWeight
+            WeightedError::InvalidWeight,
         );
 
         let weights = &[0, 0];
         assert_eq!(
             Mix::new(dists, weights).unwrap_err(),
-            WeightedError::AllWeightsZero
+            WeightedError::AllWeightsZero,
         );
     }
 }
