@@ -129,11 +129,10 @@ where
     X::Sampler: fmt::Debug,
 {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "Mix {{ distributions: {:?}, weights: {:?} }}",
-            self.distributions, self.weights
-        )
+        f.debug_struct("Mix")
+            .field("distributions", &self.distributions)
+            .field("weights", &self.weights)
+            .finish()
     }
 }
 
