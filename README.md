@@ -1,4 +1,4 @@
-# Mixture Distribution
+# Mixture Distributions
 
 [![Build Status][build-img]][build-link]
 [![mix-distribution][cratesio-img]][cratesio-link]
@@ -16,27 +16,40 @@
 ## Examples
 
 ```rust
-use rand::distributions::{Distribution, Normal};
+use rand_distr::{Distribution, Normal};
 use mix_distribution::Mix;
 
 let mut rng = rand::thread_rng();
 
 // Mixture of two distributions
 let mix = {
-    let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0)];
+    let dists = vec![
+        Normal::new(0.0, 1.0).unwrap(),
+        Normal::new(1.0, 2.0).unwrap(),
+    ];
     let weights = &[2, 1];
     Mix::new(dists, weights).unwrap()
 };
-
 mix.sample(&mut rng);
 
 // Mixture of three distributions
 let mix = {
-    let dists = vec![Normal::new(0.0, 1.0), Normal::new(1.0, 2.0), Normal::new(-1.0, 1.0)];
+    let dists = vec![
+        Normal::new(0.0, 1.0).unwrap(),
+        Normal::new(1.0, 2.0).unwrap(),
+        Normal::new(-1.0, 1.0).unwrap(),
+    ];
     let weights = &[2, 1, 3];
     Mix::new(dists, weights).unwrap()
 };
+mix.sample(&mut rng);
 
+// From iterator over (distribution, weight) pairs
+let mix = Mix::with_zip(vec![
+    (Uniform::new_inclusive(0, 0), 2),
+    (Uniform::new_inclusive(1, 1), 1),
+])
+.unwrap();
 mix.sample(&mut rng);
 ```
 

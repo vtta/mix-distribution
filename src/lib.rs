@@ -14,7 +14,7 @@ use rand_distr::{
 /// # Examples
 ///
 /// ```rust
-/// use rand_distr::{Distribution, Normal};
+/// use rand_distr::{Distribution, Normal, Uniform};
 /// use mix_distribution::Mix;
 ///
 /// let mut rng = rand::thread_rng();
@@ -28,20 +28,26 @@ use rand_distr::{
 ///     let weights = &[2, 1];
 ///     Mix::new(dists, weights).unwrap()
 /// };
-///
 /// mix.sample(&mut rng);
 ///
 /// // Mixture of three distributions
 /// let mix = {
 ///     let dists = vec![
-///         Normal::new(0.0, 1.0).unwrap(),
-///         Normal::new(1.0, 2.0).unwrap(),
-///         Normal::new(-1.0, 1.0).unwrap(),
+///         Uniform::new_inclusive(0.0, 2.0),
+///         Uniform::new_inclusive(1.0, 3.0),
+///         Uniform::new_inclusive(2.0, 4.0),
 ///     ];
 ///     let weights = &[2, 1, 3];
 ///     Mix::new(dists, weights).unwrap()
 /// };
+/// mix.sample(&mut rng);
 ///
+/// // From iterator over (distribution, weight) pairs
+/// let mix = Mix::with_zip(vec![
+///     (Uniform::new_inclusive(0, 2), 2),
+///     (Uniform::new_inclusive(1, 3), 1),
+/// ])
+/// .unwrap();
 /// mix.sample(&mut rng);
 /// ```
 pub struct Mix<T, U, X>
