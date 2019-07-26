@@ -76,6 +76,24 @@ where
             _marker: PhantomData,
         })
     }
+
+    /// Creats a new `Mix` with the given iterator over (distribution, weight) pairs.
+    ///
+    /// Propagates errors from `rand_dist::weighted::WeightedIndex::new()`.
+    pub fn with_zip<W>(
+        dists_weights: impl IntoIterator<Item = (T, W)>,
+    ) -> Result<Self, WeightedError>
+    where
+        W: SampleBorrow<X>,
+        X: for<'a> AddAssign<&'a X> + Clone + Default,
+    {
+        let (distributions, weights): (Vec<_>, Vec<_>) = dists_weights.into_iter().unzip();
+        Ok(Self {
+            distributions,
+            weights: WeightedIndex::new(weights)?,
+            _marker: PhantomData,
+        })
+    }
 }
 
 impl<T, U, X> Distribution<U> for Mix<T, U, X>
@@ -234,6 +252,27 @@ mod tests {
 
         assert_eq!((zeros as f64 / 100.0).round() as i32, 4);
         assert_eq!((ones as f64 / 100.0).round() as i32, 6);
+    }
+
+    #[test]
+    fn test_zip() {
+        let mut rng = rand::thread_rng();
+
+        let mix = Mix::with_zip(vec![
+            (Uniform::new_inclusive(0, 0), 2),
+            (Uniform::new_inclusive(1, 1), 1),
+        ])
+        .unwrap();
+
+        let data = mix.sample_iter(&mut rng).take(300).collect::<Vec<_>>();
+
+        let zeros = data.iter().filter(|&&x| x == 0).count();
+        let ones = data.iter().filter(|&&x| x == 1).count();
+
+        assert_eq!(zeros + ones, 300);
+
+        assert_eq!((zeros as f64 / 100.0).round() as i32, 2);
+        assert_eq!((ones as f64 / 100.0).round() as i32, 1);
     }
 
     #[test]
