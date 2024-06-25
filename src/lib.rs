@@ -5,8 +5,7 @@ use std::{fmt, marker::PhantomData, ops::AddAssign};
 use rand::Rng;
 use rand_distr::{
     uniform::{SampleBorrow, SampleUniform},
-    weighted::{WeightedError, WeightedIndex},
-    Distribution,
+    Distribution, WeightedError, WeightedIndex,
 };
 
 /// Mixture distributions.
